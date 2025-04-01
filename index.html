@@ -1,0 +1,161 @@
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcard Downloads</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background-color: #f8f9fa;
+            color: #333;
+            padding: 50px;
+        }
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .logo {
+            width: 150px;
+            margin-bottom: 20px;
+        }
+        .intro-text {
+            font-size: 1.2em;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            color: #555;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        .flags-container {
+            display: grid;
+            grid-template-columns: repeat(4, 100px);
+            gap: 20px;
+            justify-content: center;
+        }
+        .flag {
+            width: 100px;
+            height: 75px;
+            cursor: pointer;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .flag:hover, .flag.selected {
+            transform: scale(1.1);
+            box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.2);
+            border: 4px solid #007BFF;
+        }
+        .difficulty-container {
+            display: flex;
+            gap: 15px;
+        }
+        .difficulty-button {
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        .difficulty-button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+        #downloadLink {
+            display: none;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        #downloadAnchor {
+            text-decoration: none;
+            color: #28a745;
+            background-color: #eafbea;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+        #downloadAnchor:hover {
+            background-color: #c8f5c8;
+        }
+    </style>
+</head>
+<body>
+    <img src="/assets/logo.svg" alt="Flashcard Logo" class="logo">
+    <h1>Deckmill</h1>
+    <p class="intro-text">Enhance your language skills with our carefully curated Anki flashcard decks. Choose a language and a difficulty level, and start learning today!</p>
+    
+    <div class="container">
+        <div class="flags-container">
+            <img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/pt.svg" class="flag" onclick="selectLanguage('Portuguese', event)">
+            <img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/br.svg" class="flag" onclick="selectLanguage('Brazilian Portuguese', event)">
+            <img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/it.svg" class="flag" onclick="selectLanguage('Italian', event)">
+            <img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/fr.svg" class="flag" onclick="selectLanguage('French', event)">
+            <img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/de.svg" class="flag" onclick="selectLanguage('German', event)">
+            <img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/nl.svg" class="flag" onclick="selectLanguage('Dutch', event)">
+            <img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/pl.svg" class="flag" onclick="selectLanguage('Polish', event)">
+            <img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/es.svg" class="flag" onclick="selectLanguage('Spanish', event)">
+        </div>
+        
+        <div class="difficulty-container">
+            <button class="difficulty-button" onclick="selectDifficulty('Beginner')">Beginner</button>
+            <button class="difficulty-button" onclick="selectDifficulty('Intermediate')">Intermediate</button>
+            <button class="difficulty-button" onclick="selectDifficulty('Advanced')">Advanced</button>
+        </div>
+    </div>
+    
+    <p id="downloadLink"><a id="downloadAnchor" href="#" download>Download Deck</a></p>
+    
+    <script>
+        let selectedLanguage = "";
+        let selectedDifficulty = "";
+
+        function selectLanguage(language, event) {
+            selectedLanguage = language;
+            document.querySelectorAll('.flag').forEach(flag => flag.classList.remove('selected'));
+            event.target.classList.add('selected');
+            updateDownloadLink();
+        }
+
+        function selectDifficulty(difficulty) {
+            selectedDifficulty = difficulty;
+            updateDownloadLink();
+        }
+
+        function updateDownloadLink() {
+            if (selectedLanguage && selectedDifficulty) {
+                const repoBaseUrl = "https://github.com/Deckmill/deckmill.github.io/raw/refs/heads/main/decks";
+                const LanguageAbbr = {
+                    'Portuguese': "PT-PT",
+                    'Brazilian Portuguese': "PT-BR",
+                    'Italian': "IT",
+                    'French': "FR", 
+                    'German': "DE", 
+                    'Dutch': "NL",
+                    'Polish': "PL", 
+                    'Spanish': "ES",
+                }
+                const DiffAbbr = {
+                    "Beginner": "easy",
+                    "Intermediate": "medium",
+                    "Advanced": "hard"
+                }
+                const filePath = `${repoBaseUrl}/${LanguageAbbr[selectedLanguage]}_${DiffAbbr[selectedDifficulty]}.apkg`;
+                const downloadAnchor = document.getElementById("downloadAnchor");
+                downloadAnchor.href = filePath;
+                downloadAnchor.textContent = `Download ${selectedLanguage.replace('-', ' ')} (${selectedDifficulty}) Deck`;
+                document.getElementById("downloadLink").style.display = "block";
+            }
+        }
+    </script>
+</body>
+</html>
+
